@@ -1,0 +1,288 @@
+#!/bin/bash
+
+
+print_c() {
+     [[ $# == 0 ]] && return 1
+
+     declare -i TERM_COLS="$(tput cols)"
+     declare -i str_len="${#1}"
+     [[ $str_len -ge $TERM_COLS ]] && {
+          echo "$1";
+          return 0;
+     }
+
+     declare -i filler_len="$(( (TERM_COLS - str_len) / 2 ))"
+     [[ $# -ge 2 ]] && ch="${2:0:1}" || ch=" "
+     filler=""
+     for (( i = 0; i < filler_len; i++ )); do
+          filler="${filler}${ch}"
+     done
+
+     printf "%s%s%s" "$filler" "$1" "$filler"
+     [[ $(( (TERM_COLS - str_len) % 2 )) -ne 0 ]] && printf "%s" "${ch}"
+     printf "\n"
+
+     return 0
+}
+
+print_c "=" "="
+print_c "This is a centert Text"
+print_c "=" "="
+
+print_r() {
+     [[ $# == 0 ]] && return 1
+
+     declare -i TERM_COLS="$(tput cols)"
+     declare -i str_len="${#1}"
+     [[ $str_len -ge $TERM_COLS ]] && {
+          echo "$1";
+          return 0;
+     }
+
+     declare -i filler_len="$(( (TERM_COLS - str_len) / 2 ))"
+     [[ $# -ge 2 ]] && ch="${2:0:1}" || ch=" "
+     filler=""
+     for (( i = 0; i < filler_len; i++ )); do
+          filler="${filler}${ch}"
+     done
+
+     printf "%s%s%s" "$filler" "$filler" "$1"
+     [[ $(( (TERM_COLS - str_len) % 2 )) -ne 0 ]] && printf "%s" "${ch}"
+     printf "\n"
+
+     return 0
+}
+
+print_r "This Text is on the right"
+print_c "░" "░"
+
+print_b() {
+    str="$@"
+    len=$((${#str}+6))
+    for i in $(seq $len); do echo -n '🭻'; done;
+    echo; echo "🭰   "$str" 🭵";
+    for i in $(seq $len); do echo -n '🭶'; done;
+    echo
+}
+
+print_b "This Box is on the left"
+
+
+print_bc() {
+    str="$@"
+    len=$((${#str}+6))
+    TOP=`for i in $(seq $len); do echo -n '🭻'; done;`
+    MID=`echo "🭰   "$str" 🭵";`
+    BOT=`for i in $(seq $len); do echo -n '🭶'; done;`
+
+	print_c "$TOP"
+	print_c "$MID"
+	print_c "$BOT"
+}
+
+print_bc "This is a center Box"
+
+
+print_br() {
+    str="$@"
+    len=$((${#str}+6))
+    TOP=`for i in $(seq $len); do echo -n '🭻'; done;`
+    MID=`echo "🭰   "$str" 🭵";`
+    BOT=`for i in $(seq $len); do echo -n '🭶'; done;`
+
+	print_r "$TOP"
+	print_r "$MID"
+	print_r "$BOT"
+}
+
+print_br "This is a center Box"
+print_c "▚" "▚"
+
+print_mlb() {
+    local longest=0
+    local string_array=("${@}")
+    for i in "${string_array[@]}"; do
+      if [[ "${#i}" -gt "${longest}" ]]; then
+        local longest=${#i}
+        local longest_line="${i}" # Longest line
+      fi
+    done
+  
+    local edge=$(echo "$longest_line" | sed 's/./🭹/g' | sed 's/^🭰/🭹🭹🭹/' | sed 's/$/🭹🭹🭹🭹/')
+    local middle_edge=$(echo "$longest_line" | sed 's/./\ /g' | sed 's/^\ /🭰\  /' | sed 's/\ $/\ \ 🭵/')
+  
+    echo -e "\n${edge}"
+    echo "${middle_edge}"
+  
+    for i in "${string_array[@]}"; do
+      local length_i=${#i}
+      local length_ll="${#longest_line}"
+      if [[ "${length_i}" -lt "${length_ll}"  ]]; then
+              printf "🭰 "
+              local remaining_spaces=$((length_ll-length_l))
+              printf "${i}"
+              while [[ ${remaining_spaces} -gt ${#i} ]]; do
+                      printf " "
+                      local remaining_spaces=$((remaining_spaces-1))
+              done
+              printf " 🭵\n"
+      else
+        echo "🭰 ${i} 🭵"
+      fi
+    done
+  
+    echo "${middle_edge}"
+    echo -e "${edge}\n"
+}
+
+print_mlb "Hi." "I'm Here"  "Nice to meet you......"  
+
+
+print_mlbc() {
+    local longest=0
+    local string_array=("${@}")
+    for i in "${string_array[@]}"; do
+      if [[ "${#i}" -gt "${longest}" ]]; then
+        local longest=${#i}
+        local longest_line="${i}" # Longest line
+      fi
+    done
+  
+    local edge=$(echo "$longest_line" | sed 's/./🭹/g' | sed 's/^🭰/🭹🭹🭹/' | sed 's/$/🭹🭹🭹🭹/')
+    local middle_edge=$(echo "$longest_line" | sed 's/./\ /g' | sed 's/^\ /🭰\  /' | sed 's/\ $/\ \ 🭵/')
+  
+    print_c "${edge}"
+    print_c "${middle_edge}"
+  
+    for i in "${string_array[@]}"; do
+      local length_i=${#i}
+      local length_ll="${#longest_line}"
+     short_l=`if [[ "${length_i}" -lt "${length_ll}"  ]]; then
+              printf "🭰 "
+              local remaining_spaces=$((length_ll-length_l))
+              printf "${i}"
+              while [[ ${remaining_spaces} -gt ${#i} ]]; do
+                      printf " "
+                      local remaining_spaces=$((remaining_spaces-1))
+              done
+              printf " 🭵\n"
+      else
+        echo "🭰 ${i} 🭵"
+      fi`
+      print_c "$short_l"
+    done
+     
+    print_c "${middle_edge}"
+    print_c "${edge}"
+}
+
+print_mlbc "Hi." "I'm Here"  "Nice to meet you......"  
+
+
+print_mlbr() {
+    local longest=0
+    local string_array=("${@}")
+    for i in "${string_array[@]}"; do
+      if [[ "${#i}" -gt "${longest}" ]]; then
+        local longest=${#i}
+        local longest_line="${i}" # Longest line
+      fi
+    done
+  
+    local edge=$(echo "$longest_line" | sed 's/./🭹/g' | sed 's/^🭰/🭹🭹🭹/' | sed 's/$/🭹🭹🭹🭹/')
+    local middle_edge=$(echo "$longest_line" | sed 's/./\ /g' | sed 's/^\ /🭰\  /' | sed 's/\ $/\ \ 🭵/')
+  
+    print_r "${edge}"
+    print_r "${middle_edge}"
+  
+    for i in "${string_array[@]}"; do
+      local length_i=${#i}
+      local length_ll="${#longest_line}"
+     short_l=`if [[ "${length_i}" -lt "${length_ll}"  ]]; then
+              printf "🭰 "
+              local remaining_spaces=$((length_ll-length_l))
+              printf "${i}"
+              while [[ ${remaining_spaces} -gt ${#i} ]]; do
+                      printf " "
+                      local remaining_spaces=$((remaining_spaces-1))
+              done
+              printf " 🭵\n"
+      else
+        echo "🭰 ${i} 🭵"
+      fi`
+      print_r "$short_l"
+    done
+     
+    print_r "${middle_edge}"
+    print_r "${edge}"
+}
+
+print_mlbr "Hi." "I'm Here"  "Nice to meet you......"  
+
+print_mlb2()
+{
+  local s=("$@") b w
+  for l in "${s[@]}"; do
+    ((w<${#l})) && { b="$l"; w="${#l}"; }
+  done
+  tput setaf 3
+  echo -e " -${b//?/-}- \n| ${b//?/ } |"
+  for l in "${s[@]}"; do
+    printf '| %s%*s%s |\n' "$(tput setaf 4)" "-$w" "$l" "$(tput setaf 3)"
+  done
+  echo -e "| ${b//?/ } |\n -${b//?/-}-"
+  tput sgr 0
+}
+
+print_mlb2 "Let's" "give it a try" "and put hier some longer line of text"
+
+
+print_mlb2c()
+{
+  local s=("$@") b w
+  for l in "${s[@]}"; do
+    ((w<${#l})) && { b="$l"; w="${#l}"; }
+  done
+  tput setaf 3
+  print_c " -${b//?/-}- "
+  print_c "| ${b//?/ } |"
+  for l in "${s[@]}"; do
+    cont=`printf '          | %s%*s%s |\n' "$(tput setaf 4)" "-$w" "$l" "$(tput setaf 3)"`
+  print_c "$cont"
+  done
+  print_c "| ${b//?/ } |"
+  print_c " -${b//?/-}-"
+  tput sgr 0
+}
+
+print_mlb2c "Let's" "give it a try" "and put hier some longer line of text"
+
+banner() {
+    msg="$1 $2 $1"
+    edge=$(echo "$msg" | sed "s/./$1/g")
+    echo "$edge"
+    echo "$msg"
+    echo "$edge"
+}
+
+banner ! "this is a banner"
+
+banner_c() {
+    msg="$1 $2 $1"
+    edge=$(echo "$msg" | sed "s/./$1/g")
+    print_c "$edge"
+    print_c "$msg"
+    print_c "$edge"
+}
+
+banner_c "=" "this is a banner"
+
+banner_r() {
+    msg="$1 $2 $1"
+    edge=$(echo "$msg" | sed "s/./$1/g")
+    print_r "$edge"
+    print_r "$msg"
+    print_r "$edge"
+}
+
+banner_r "#" "this is a banner"

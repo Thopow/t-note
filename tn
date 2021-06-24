@@ -1,0 +1,149 @@
+#!/bin/bash
+#T-Note - Note takeing easy.
+#  ______      ____
+# /_  __/___  / __ \____ _      __
+#  / / / __ \/ /_/ / __ \ | /| / /
+# / / / /_/ / ____/ /_/ / |/ |/ /
+#/_/  \____/_/    \____/|__/|__/
+#
+#Vars
+NOTEDIR="${HOME}/.notes"
+EDIT="${EDITOR}"
+
+source ui-toolkit
+
+n() {
+	[ ! -d "$NOTEDIR" ] && mkdir $NOTEDIR
+	$EDIT $NOTEDIR/"$*" && clear ; logo ; line ; nls ; main
+} 
+
+open_number() {
+	echo -e "Enter a Number: \c"
+	read input
+	NOTE_LIST=`ls -t -1 $NOTEDIR/`
+	EDIT_NOTE=`echo $NOTE_LIST | awk -v col="$input" '{ print "n " $col }'`
+	$EDIT_NOTE
+}
+
+nls() {
+	TERM_COLS="$(tput cols)"
+	clear ; logo ; line
+	ls -t -1 $NOTEDIR | grep -n "$*" | column -c $TERM_COLS
+	main
+}
+
+nr() {
+	rm -v $NOTEDIR/"$*"
+	clear ; logo ; line ; nls ; main
+}
+
+ns() {
+	clear ; logo ; line
+	grep -C 5 "$*" $NOTEDIR/*
+	main
+}
+
+
+logo() {
+	print_c "  ______    _   ______  ____________"
+	print_c " /_  __/   / | / / __ \/_  __/ ____/"
+	print_c "  / /_____/  |/ / / / / / / / __/   "
+	print_c " / /_____/ /|  / /_/ / / / / /___   "
+	print_c "/_/     /_/ |_/\____/ /_/ /_____/   "
+	print_c "           NOTE TAKEING CLI 0.01    "  
+}
+
+line() {
+	print_c "━" "━"
+}
+
+help() {
+	echo " T-NOTE is a pure bash script application. It store all 
+ notes as separate text files so you can also use it to note 
+ scripts of any kind. Most functions are self explaining. 
+ However some functions are not full developed yet. For 
+ example the TAG management and the Change Notebook.
+ 
+  - Change Notebook: You can use any folder on your system 
+    to be your Notebook. But at this time it not change the 
+    default Notebook. If you like to do so you need to change 
+    line 10 of the script.
+
+  - You can set your default editor at line 11.
+    
+  - TAG's are at this time just extensions to the title and 
+    made by using _tag_anothertag. And you can search them 
+    with Search Title.
+ 
+ Thanks for the use and I'm happy to get your feed back at:
+ https://www.reddit.com/user/ToPow1 "
+}
+
+menu() {
+	print_c  "n/New Note | o/Open Note | l/Refresh List | cnb/Change Notebook"
+	print_c  "s/Search Title | sf/Full Text Searc | d/Delete Note"
+	print_c  "q/Quite | h/Help - About"
+}
+
+q() {
+	clear ; exit
+}
+
+main() {
+	line ; menu ; line
+	echo -e "Enter your commant: \c"
+	read chois
+	case $chois in
+		n)
+			line
+			echo -e " Name Note: \c"
+			read name
+			new=`echo "n $name"`
+			$new ;;
+		o)
+			line ; open_number ;;
+		sf)
+			line
+			echo -e " Input any String: \c"
+			read any
+			search=`echo "ns $any"`
+			$search ;;
+		s)
+			line
+			echo -e " Input any String: \c"
+			read tot
+			search=`echo "nls $tot"`
+			$search ;;
+		l)
+			nls ; main ;;
+		d)
+			line
+			echo -e " Enter full name to delete: \c"
+			read delete
+			nrn=`echo "nr $delete"`
+			$nrn ;;
+		cnb)
+			echo -e " Enter new Note Directory: \c"
+			read ndir
+			NOTEDIR="$ndir"
+			echo " New Note Directory: $NOTEDIR"
+			line ; nls ; main ;;
+		h)
+			clear ; logo ; line ; help ; main ;;
+		q)
+			clear ; exit ;;
+		*)
+			echo " Incorrect input" ; sleep 1 ; nls ; main ;;
+	esac
+}
+
+trap '' SIGINT SIGQUIT SIGTSTP
+
+while true
+do
+clear
+logo
+line
+nls
+main
+done
