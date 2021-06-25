@@ -14,7 +14,7 @@ source ui-toolkit
 
 n() {
 	[ ! -d "$NOTEDIR" ] && mkdir $NOTEDIR
-	$EDIT $NOTEDIR/"$*" && clear ; logo ; line ; nls ; main
+	$EDIT $NOTEDIR/"$*" && clear -x ; logo ; line ; nls ; main
 } 
 
 open_number() {
@@ -27,18 +27,18 @@ open_number() {
 
 nls() {
 	TERM_COLS="$(tput cols)"
-	clear ; logo ; line
+	clear -x ; logo ; line ; print_c "$(date '+%D - %H:%M h')" ; line
 	ls -t -1 $NOTEDIR | grep -n "$*" | column -c $TERM_COLS
 	main
 }
 
 nr() {
 	rm -v $NOTEDIR/"$*"
-	clear ; logo ; line ; nls ; main
+	clear -x ; logo ; line ; nls ; main
 }
 
 ns() {
-	clear ; logo ; line
+	clear -x ; logo ; line
 	grep -C 5 "$*" $NOTEDIR/*
 	main
 }
@@ -86,7 +86,7 @@ menu() {
 }
 
 q() {
-	clear ; exit
+	clear -x ; exit
 }
 
 main() {
@@ -129,9 +129,9 @@ main() {
 			echo " New Note Directory: $NOTEDIR"
 			line ; nls ; main ;;
 		h)
-			clear ; logo ; line ; help ; main ;;
+			clear -x ; logo ; line ; help ; main ;;
 		q)
-			clear ; exit ;;
+			clear -x ; exit ;;
 		*)
 			echo " Incorrect input" ; sleep 1 ; nls ; main ;;
 	esac
@@ -141,9 +141,7 @@ trap '' SIGINT SIGQUIT SIGTSTP
 
 while true
 do
-clear
-logo
-line
+clear -x
 nls
 main
 done

@@ -25,10 +25,6 @@ print_c() {
      return 0
 }
 
-print_c "=" "="
-print_c "This is a centert Text"
-print_c "=" "="
-
 print_r() {
      [[ $# == 0 ]] && return 1
 
@@ -53,9 +49,6 @@ print_r() {
      return 0
 }
 
-print_r "This Text is on the right"
-print_c "░" "░"
-
 print_b() {
     str="$@"
     len=$((${#str}+6))
@@ -64,9 +57,6 @@ print_b() {
     for i in $(seq $len); do echo -n '🭶'; done;
     echo
 }
-
-print_b "This Box is on the left"
-
 
 print_bc() {
     str="$@"
@@ -80,9 +70,6 @@ print_bc() {
 	print_c "$BOT"
 }
 
-print_bc "This is a center Box"
-
-
 print_br() {
     str="$@"
     len=$((${#str}+6))
@@ -94,9 +81,6 @@ print_br() {
 	print_r "$MID"
 	print_r "$BOT"
 }
-
-print_br "This is a center Box"
-print_c "▚" "▚"
 
 print_mlb() {
     local longest=0
@@ -134,9 +118,6 @@ print_mlb() {
     echo "${middle_edge}"
     echo -e "${edge}\n"
 }
-
-print_mlb "Hi." "I'm Here"  "Nice to meet you......"  
-
 
 print_mlbc() {
     local longest=0
@@ -176,9 +157,6 @@ print_mlbc() {
     print_c "${edge}"
 }
 
-print_mlbc "Hi." "I'm Here"  "Nice to meet you......"  
-
-
 print_mlbr() {
     local longest=0
     local string_array=("${@}")
@@ -216,8 +194,7 @@ print_mlbr() {
     print_r "${middle_edge}"
     print_r "${edge}"
 }
-
-print_mlbr "Hi." "I'm Here"  "Nice to meet you......"  
+ 
 
 print_mlb2()
 {
@@ -233,9 +210,6 @@ print_mlb2()
   echo -e "| ${b//?/ } |\n -${b//?/-}-"
   tput sgr 0
 }
-
-print_mlb2 "Let's" "give it a try" "and put hier some longer line of text"
-
 
 print_mlb2c()
 {
@@ -255,8 +229,6 @@ print_mlb2c()
   tput sgr 0
 }
 
-print_mlb2c "Let's" "give it a try" "and put hier some longer line of text"
-
 banner() {
     msg="$1 $2 $1"
     edge=$(echo "$msg" | sed "s/./$1/g")
@@ -264,8 +236,6 @@ banner() {
     echo "$msg"
     echo "$edge"
 }
-
-banner ! "this is a banner"
 
 banner_c() {
     msg="$1 $2 $1"
@@ -275,8 +245,6 @@ banner_c() {
     print_c "$edge"
 }
 
-banner_c "=" "this is a banner"
-
 banner_r() {
     msg="$1 $2 $1"
     edge=$(echo "$msg" | sed "s/./$1/g")
@@ -285,4 +253,3 @@ banner_r() {
     print_r "$edge"
 }
 
-banner_r "#" "this is a banner"
